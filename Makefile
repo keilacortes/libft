@@ -1,85 +1,53 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    Makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: kqueiroz <kqueiroz@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/08/05 18:09:41 by kqueiroz          #+#    #+#              #
-#    Updated: 2025/08/05 19:14:10 by kqueiroz         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
+GREEN  = \033[1;32m
+YELLOW = \033[1;33m
+PURPLE = \033[1;34m
+CYAN   = \033[1;36m
+BLUE   = \033[1;34m
+RESET  = \033[0m
+ERASE  = \033[K
 
 NAME = libft.a
-HDRS = libft.h
-CC = cc
+SRC_DIR = src
+INC_DIR = inc
+OBJ_DIR = obj
+
+CC = gcc
 CFLAGS = -Wall -Wextra -Werror
+AR = ar
+ARFLAGS = rcs
+INCLUDES = -I$(INC_DIR)
 
-SRCS = ft_isalpha.c\
-       ft_isdigit.c\
-       ft_strlen.c\
-       ft_isalnum.c\
-       ft_isascii.c\
-       ft_isprint.c\
-       ft_memset.c\
-       ft_bzero.c\
-       ft_memcpy.c\
-       ft_memmove.c\
-       ft_strlcpy.c\
-       ft_strlcat.c\
-       ft_toupper.c\
-       ft_tolower.c\
-       ft_strchr.c\
-       ft_strrchr.c\
-       ft_strncmp.c\
-       ft_memchr.c\
-       ft_memcmp.c\
-       ft_strnstr.c\
-       ft_atoi.c\
-       ft_calloc.c\
-       ft_strdup.c\
-       ft_substr.c\
-       ft_strjoin.c\
-       ft_strtrim.c\
-       ft_split.c\
-       ft_itoa.c\
-       ft_strmapi.c\
-       ft_striteri.c\
-       ft_putchar_fd.c\
-       ft_putstr_fd.c\
-       ft_putendl_fd.c\
-       ft_putnbr_fd.c
-
-SRCS_BONUS = ft_lstsize_bonus.c\
-             ft_lstnew_bonus.c\
-             ft_lstadd_front_bonus.c\
-             ft_lstlast_bonus.c\
-             ft_lstadd_back_bonus.c\
-             ft_lstdelone_bonus.c\
-             ft_lstclear_bonus.c\
-             ft_lstiter_bonus.c\
-             ft_lstmap_bonus.c
-
-OBJS = $(SRCS:.c=.o)
-OBJS_BONUS = $(SRCS_BONUS:.c=.o)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -I $(HDRS) -c $< -o $@
+SRC = $(shell find $(SRC_DIR) -name "*.c")
+OBJ = $(SRC:$(SRC_DIR)/%.c=$(OBJ_DIR)/%.o)
+HEADER = $(wildcard $(INC_DIR)/*.h)
+SUB_DIRS = ft_printf get_next_line
 
 all: $(NAME)
 
-$(NAME): $(OBJS)
-	ar rcs $@ $^
+$(NAME): $(OBJ)
+	@$(AR) $(ARFLAGS) $(NAME) $(OBJ)
+	@echo "\n$(GREEN)$(NAME) created$(RESET)"
 
-bonus:
-	@$(MAKE) OBJS="$(OBJS) $(OBJS_BONUS)"
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c $(HEADER) | $(OBJ_DIR)
+	@mkdir -p $(dir $@)
+	@printf "\r$(ERASE)$(BLUE)Compiling $(notdir $<)$(RESET)"
+	@$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(OBJ_DIR):
+	@mkdir -p $(OBJ_DIR)
+	@for dir in $(SUB_DIRS); do \
+		mkdir -p $(OBJ_DIR)/$$dir; \
+	done
+	@echo "$(GREEN)obj directory structure created$(RESET)"
 
 clean:
-	rm -f $(OBJS) $(OBJS_BONUS)
+	@echo "$(YELLOW)obj directory removed$(RESET)"
+	@rm -rf $(OBJ_DIR)
 
 fclean: clean
-	rm -f $(NAME)
+	@echo "$(YELLOW)$(NAME) removed$(RESET)"
+	@rm -f $(NAME)
 
 re: fclean all
 
-.PHONY: all bonus clean fclean re
+.PHONY: all clean fclean re
