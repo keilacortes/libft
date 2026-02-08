@@ -1,30 +1,43 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   pf_putptr_fd.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kqueiroz <kqueiroz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/31 22:18:48 by kqueiroz          #+#    #+#             */
-/*   Updated: 2025/08/24 20:18:58 by kqueiroz         ###   ########.fr       */
+/*   Created: 2025/08/09 20:59:49 by kqueiroz          #+#    #+#             */
+/*   Updated: 2026/02/08 01:20:58 by kqueiroz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "ft_printf.h"
 
-int	ft_putstr_fd(char *s, int fd)
+static int	pf_puthex_ptr_fd(uintptr_t n, char format, int fd)
 {
-	int	i;
+	int		count;
+	char	*base;
+
+	count = 0;
+	base = "0123456789abcdef";
+	if (n >= 16)
+		count += pf_puthex_ptr_fd(n / 16, format, fd);
+	count += pf_putchar_fd(base[n % 16], fd);
+	return (count);
+}
+
+int	pf_putptr_fd(void *ptr, int fd)
+{
+	int	count;
 
 	if (fd < 0)
 		return (0);
-	if (!s)
-		return (write(fd, "(null)", 6));
-	i = 0;
-	while (s[i])
+	if (!ptr)
 	{
-		write(fd, &s[i], 1);
-		i++;
+		pf_putstr_fd("(nil)", fd);
+		return (5);
 	}
-	return (i);
+	count = 2;
+	pf_putstr_fd("0x", fd);
+	count += pf_puthex_ptr_fd((uintptr_t)ptr, 'x', fd);
+	return (count);
 }
