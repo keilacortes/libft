@@ -123,7 +123,7 @@ $> make
 $> make bonus
 ```
 
-### Exemplo
+### Exemplo (`test_libft.c`)
 ```c
 #include "libft.h"
 
@@ -142,7 +142,7 @@ int main()
 
 ### Compile:
 ```bash
-gcc -Wall -Wextra -Werror meu_programa.c libft.a -o test_libft
+$> gcc test_libft.c -o test_libft -I inc libft.a
 ```
   
 ## 🏗️ Estrutura do Projeto
