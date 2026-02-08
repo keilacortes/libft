@@ -6,7 +6,7 @@
 /*   By: kqueiroz <kqueiroz@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/08/09 20:59:49 by kqueiroz          #+#    #+#             */
-/*   Updated: 2025/09/03 17:50:07 by kqueiroz         ###   ########.fr       */
+/*   Updated: 2026/02/07 22:53:41 by kqueiroz         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,8 +27,7 @@ static int	ft_puthex_ptr_fd(uintptr_t n, char format, int fd)
 
 int	ft_putptr_fd(void *ptr, int fd)
 {
-	int			count;
-	uintptr_t	addr;
+	int	count;
 
 	if (fd < 0)
 		return (0);
@@ -37,9 +36,8 @@ int	ft_putptr_fd(void *ptr, int fd)
 		ft_putstr_fd("(nil)", fd);
 		return (5);
 	}
-	addr = (uintptr_t)ptr;
 	count = 2;
 	ft_putstr_fd("0x", fd);
-	count += ft_puthex_ptr_fd((unsigned long)ptr, 'x', fd);
+	count += ft_puthex_ptr_fd((uintptr_t)ptr, 'x', fd);
 	return (count);
 }
